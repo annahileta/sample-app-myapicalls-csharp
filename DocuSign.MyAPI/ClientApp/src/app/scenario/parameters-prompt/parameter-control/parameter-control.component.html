@@ -1,4 +1,4 @@
-<div [formGroup]="form">
+<div [formGroup]="form" *ngIf="parameter">
   <div class="card__content">
     <div class="parameter">
       <div class="parameter__label">
@@ -28,65 +28,64 @@
             ></mat-label>
             <!-- input -->
             <div [ngSwitch]="parameter.type">
-              <input
-                matInput
-                #message
-                *ngSwitchCase="ParameterPromptType.string"
-                [formControlName]="parameter.name"
-                [id]="parameter.name"
-                [required]="parameter.required"
-              />
+              <input matInput
+                     #message
+                     *ngSwitchCase="ParameterPromptType.string"
+                     [formControlName]="parameter.name"
+                     [id]="parameter.name"
+                     [required]="parameter.required" />
               <!-- textarea -->
-              <textarea
-                matInput
-                #message
-                type="text"
-                *ngSwitchCase="ParameterPromptType.text"
-                [formControlName]="parameter.name"
-                [id]="parameter.name"
-                [required]="parameter.required"
-              ></textarea>
+              <textarea matInput
+                        #message
+                        type="text"
+                        *ngSwitchCase="ParameterPromptType.text"
+                        [formControlName]="parameter.name"
+                        [id]="parameter.name"
+                        [required]="parameter.required"></textarea>
 
               <!-- file -->
               <div *ngSwitchCase="ParameterPromptType.file">
                 <label for="{{ identifier }}" class="file">
-                  <input
-                    class="file__input"
-                    type="file"
-                    [formControlName]="parameter.name"
-                    id="{{ identifier }}"
-                    [required]="parameter.required"
-                    (change)="handleFileInput($event.target)"
-                  />
-                  <span
-                    class="file__button mat-button-base mat-stroked-button mat-primary"
-                    translate
-                    >EXECUTE.PARAMETERS.CHOOSE_FILE</span
-                  >
+                  <input class="file__input"
+                         type="file"
+                         [formControlName]="parameter.name"
+                         id="{{ identifier }}"
+                         [required]="parameter.required"
+                         (change)="handleFileInput($event.target)" />
+                  <span class="file__button mat-button-base mat-stroked-button mat-primary"
+                        translate>EXECUTE.PARAMETERS.CHOOSE_FILE</span>
 
-                  <span class="file__text" [title]="fileName">{{
+                  <span class="file__text" [title]="fileName">
+                    {{
                     fileName
-                  }}</span>
+                    }}
+                  </span>
                 </label>
                 <input matInput style="display: none" />
               </div>
               <!-- email -->
-              <input
-                matInput
-                #message
-                type="email"
-                *ngSwitchCase="ParameterPromptType.email"
-                [formControlName]="parameter.name"
-                [id]="parameter.name"
-                [required]="parameter.required"
-              />
+              <input matInput
+                     #message
+                     type="email"
+                     *ngSwitchCase="ParameterPromptType.email"
+                     [formControlName]="parameter.name"
+                     [id]="parameter.name"
+                     [required]="parameter.required" />
               <!-- select -->
-              <mat-select
-                [id]="parameter.name"
-                *ngSwitchCase="ParameterPromptType.select"
-                [formControlName]="parameter.name"
-                [required]="parameter.required"
-              >
+              <mat-select [id]="parameter.name"
+                          *ngSwitchCase="ParameterPromptType.select"
+                          [formControlName]="parameter.name"
+                          [required]="parameter.required">
+                <mat-option *ngFor="let opt of options" [value]="opt.key">
+                  {{ opt.value }}
+                </mat-option>
+              </mat-select>
+              <!-- multi select -->
+              <mat-select [id]="parameter.name"
+                          *ngSwitchCase="ParameterPromptType.multiSelect"
+                          [formControlName]="parameter.name"
+                          [required]="parameter.required"
+                          multiple>
                 <mat-option *ngFor="let opt of options" [value]="opt.key">
                   {{ opt.value }}
                 </mat-option>

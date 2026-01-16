@@ -26,7 +26,7 @@ export class ParameterControlComponent implements OnInit {
   constructor(
     @Inject(ParametersPromptNotificationService)
     private parametersPromptNotificationService: ParametersPromptNotificationService
-  ) {}
+  ) { }
 
   get control() {
     return this.form?.get(this.parameter.name);
@@ -62,13 +62,19 @@ export class ParameterControlComponent implements OnInit {
       this.control?.valueChanges.subscribe((data) => {
         this.parametersPromptNotificationService.notifyChange(<IParameterValue>{
           parameter: this.parameter,
-          value: data,
+          value: this.parameter.type === ParameterPromptType.multiSelect && Array.isArray(data)
+            ? data.join(',')
+            : data,
         });
       });
 
       this.parametersPromptNotificationService.parameter$.subscribe((data) => {
         if (data.parameter?.name == this.parameter.name) {
-          this.control?.setValue(data.value, {
+          let valueToSet = data.value;
+          if (this.parameter.type === ParameterPromptType.multiSelect && typeof data.value === 'string') {
+            valueToSet = data.value ? data.value.split(',') : [];
+          }
+          this.control?.setValue(valueToSet, {
             onlySelf: true,
             emitEvent: false,
           });
@@ -78,12 +84,15 @@ export class ParameterControlComponent implements OnInit {
   }
 
   notifyChange() {
+    let value = this.control?.value;
+    if (this.parameter.type === ParameterPromptType.file) {
+      value = this.fileValue;
+    } else if (this.parameter.type === ParameterPromptType.multiSelect && Array.isArray(value)) {
+      value = value.join(',');
+    }
     this.parametersPromptNotificationService.notifyChange(<IParameterValue>{
       parameter: this.parameter,
-      value:
-        this.parameter.type == ParameterPromptType.file
-          ? this.fileValue
-          : this.control?.value,
+      value: value,
     });
   }
 
