@@ -14,6 +14,17 @@
             <span class="warning" translate>EXECUTE.PARAMETERS.REQUIRED</span>
           </strong>
 
+          <!-- clear selection -->
+          <button
+            mat-button
+            type="button"
+            class="parameter__clear_selection"
+            *ngIf="parameter.type === ParameterPromptType.select && !parameter.required && hasSelection(parameter.name)"
+            (click)="clearSelection(parameter.name)"
+            translate="EXECUTE.PARAMETERS.CLEAR_SELECTION"
+          >
+          </button>
+
           <mat-form-field appearance="outline" class="disable-label-floating">
             <mat-label
               *ngIf="parameter.type !== ParameterPromptType.file"
